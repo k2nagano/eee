@@ -4,7 +4,7 @@
 #include <memory>
 
 #include <QEvent>
-#include <QLabel>
+#include <QPointer>
 #include <QPushButton>
 #include <QWidget>
 
@@ -31,19 +31,24 @@ protected:
 
 private Q_SLOTS:
   void onResetClicked();
+  void onOverlayLabelClicked();
 
 private:
-  void ensureOverlay();
+  QWidget * findRvizMainWindow() const;
+  void ensureOverlayWidgets();
+  void ensureMainWindowEventFilter();
   void updateOverlayGeometry();
+  void raiseAlertWidgets();
   void setAlertState(bool active);
   void systemErrorCallback(const std_msgs::msg::Bool::SharedPtr msg);
 
   std::shared_ptr<rviz_common::ros_integration::RosNodeAbstractionIface> node_ptr_;
   rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr subscription_;
 
-  QLabel * state_label_;
   QPushButton * reset_button_;
+  QPointer<QWidget> main_window_;
   QWidget * overlay_;
+  QPushButton * overlay_label_button_;
   bool alert_active_;
 };
 
